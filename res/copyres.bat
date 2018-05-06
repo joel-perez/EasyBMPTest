@@ -1,0 +1,1 @@
+copy *.bmp ..\Debug
