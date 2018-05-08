@@ -4,8 +4,7 @@
 #include "lib/EasyBMP.h"
 #include "lib/EasyBMP_Geometry.h"
 #include "lib/EasyBMP_Font.h"
-
-void crearEjemploTexto();
-void crearEjemploTerreno();
+// .......
+void crearEjemploTerreno(char* jugador);
 
 #endif
