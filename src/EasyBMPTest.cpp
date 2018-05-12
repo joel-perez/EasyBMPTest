@@ -1,76 +1,38 @@
-//============================================================================
-// Name        : EasyBMPTest.cpp
-// Author      : Joel Perez
-// Version     :
-// Copyright   : Copyright 2018 Joel Perez
-// Description : Test application for EasyBMP Library.
-//============================================================================
-
-#include <iostream>
 #include "EasyBMPTest.h"
 
-using namespace std;
+Imagen::Imagen(){
 
-// FILA = COLUMNA - 3 Para que se visualice bien (hasta el momento)
-const int FILA = 9;
-const int COLUMNA = 12;
-const int MARGEN_COLUMNA = 80;
-const int MARGEN_FILA =30;
+	cultivo.ReadFromFile("cultivo.bmp");
+	fondoTerreno.ReadFromFile("terreno.bmp");
+	fondoUsuario.ReadFromFile("fondoJugador.bmp");
+	imagenDelTerreno.SetSize(fondoTerreno.TellWidth(), fondoTerreno.TellHeight()+fondoUsuario.TellHeight());
+	imagenDelTerreno.SetBitDepth(24);
 
-
-int main() {
-	cout << "Easy BMP Test" << endl;
-	char jugador[] = "Jugador";
-	crearEjemploTerreno(jugador);
-	return 0;
+	color.Red =255;
+	color.Green=255;
+	color.Blue =225;
 }
 
-void crearEjemploTerreno(char* Jugador) {
-	BMP cultivo;
-	cultivo.ReadFromFile("cultivo.bmp");
+void Imagen::rescalarImagenes(){
+	Rescale(cultivo, 'f', (imagenDelTerreno.TellWidth()-(2*MARGEN_COLUMNA))/ COLUMNA);
+}
 
-	BMP terreno;
-	terreno.ReadFromFile("terreno.bmp");
+void Imagen::pegarFondos(){
+	RangedPixelToPixelCopy(fondoTerreno, 0, fondoTerreno.TellWidth(), fondoTerreno.TellHeight(), 0, imagenDelTerreno,0, 0);
+	RangedPixelToPixelCopy(fondoUsuario, 0, fondoTerreno.TellWidth(), fondoTerreno.TellHeight()-1, 0, imagenDelTerreno,0, fondoTerreno.TellHeight());
+}
 
-	BMP usuario;
-	usuario.ReadFromFile("fondoJugador.bmp");
+void Imagen::obtenerImagenDelTerreno(char* jugador){
+	this->rescalarImagenes();
+	this->pegarFondos();
 
-	BMP ejemploTerreno;
-	ejemploTerreno.SetSize(usuario.TellWidth(), terreno.TellHeight()+usuario.TellHeight());
-	ejemploTerreno.SetBitDepth(24);
-
-	//Voy a redimensionar la imagen de los cultivos segun la cantidad de filas y columnas
-	Rescale(cultivo, 'f', (ejemploTerreno.TellWidth()-(2*MARGEN_COLUMNA))/ COLUMNA);
-
-	//Redimensionar el alto del terreno
-	Rescale(terreno, 'H', (MARGEN_FILA*2)+(FILA*cultivo.TellHeight()));
-
-	//Redimensionar el terreno del fondo. Aun no editado bien.
-	//Rescale(ejemploTerreno, 'H', terreno.TellHeight()+usuario.TellHeight());
-	//Rescale(ejemploTerreno, 'W', terreno.TellWidth());
-
-	//Pego el fondo del terreno
-	RangedPixelToPixelCopy(terreno, 0, terreno.TellWidth(), terreno.TellHeight(), 0, ejemploTerreno,0, 0);
-
-	// Pego el fondo azul
-	RangedPixelToPixelCopy(usuario, 0, terreno.TellWidth(), terreno.TellHeight()-1, 0, ejemploTerreno,0, terreno.TellHeight());
-
-	//Pega la imagen del cultivo no transparente
 	for (int fila = 0; fila < FILA; fila++){
 		for (int columna = 0; columna < COLUMNA; columna++){
-			RangedPixelToPixelCopy(cultivo,0,cultivo.TellWidth(),cultivo.TellHeight(),0,
-											  ejemploTerreno,(columna*cultivo.TellWidth())+MARGEN_COLUMNA,(fila*cultivo.TellHeight())+MARGEN_FILA);
+			RangedPixelToPixelCopy(cultivo,0,cultivo.TellWidth(),cultivo.TellHeight(),0,imagenDelTerreno,(columna*cultivo.TellWidth())+MARGEN_COLUMNA,(fila*cultivo.TellHeight())+MARGEN_FILA);
 		}
 	}
 
-	RGBApixel color;
-	//Color blanco en rgba.
-	color.Red = 225;
-	color.Green = 225;
-	color.Blue = 225;
+	PrintString(imagenDelTerreno, jugador , fondoUsuario.TellWidth()/3, fondoTerreno.TellHeight()+50 , 60, color);
 
-	//Pega nombre jugador en el fondo azul
-	PrintString(ejemploTerreno, Jugador , usuario.TellWidth()/3, terreno.TellHeight()+50 , 60, color);
-
-	ejemploTerreno.WriteToFile("ejemploterreno.bmp");
+	imagenDelTerreno.WriteToFile("ejemploterreno.bmp");
 }
