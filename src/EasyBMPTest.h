@@ -6,7 +6,7 @@
 #include "lib/EasyBMP_Font.h"
 
 const int COLUMNA = 12;
-const int FILA = 12;
+const int FILA = 9;
 const int MARGEN_COLUMNA = 80;
 const int MARGEN_FILA =30;
 // .......
@@ -30,7 +30,7 @@ public:
 	 * PRE
 	 * POST imagen del estado del terreno en cada turno creado.
 	 */
-	void obtenerImagenDelTerreno(char* jugador);
+	void obtenerImagenDelTerreno(char* jugador, int cantidadAlmacenada, int cantidadMaximaEnElAlmacen, int cantidadTanque, int cantidadTanqueMax);
 
 private:
 	/*
@@ -43,5 +43,17 @@ private:
 	 * POST coloca los fondos del disenio en la imagen final.
 	 */
 	void pegarFondos();
+
+	/*
+	 * PRE
+	 * POST
+	 */
+	std::string casquearNumeroAString(int numero);
+
+	/*
+	 * PRE
+	 * POST
+	 */
+	std::string obtenerDatos(int cantidadAlmacenada, int CantidadMaximaEnElAlmacen);
 };
 #endif

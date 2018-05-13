@@ -8,9 +8,9 @@ Imagen::Imagen(){
 	imagenDelTerreno.SetSize(fondoTerreno.TellWidth(), fondoTerreno.TellHeight()+fondoUsuario.TellHeight());
 	imagenDelTerreno.SetBitDepth(24);
 
-	color.Red =255;
-	color.Green=255;
-	color.Blue =225;
+	color.Red = 225;
+	color.Green = 225;
+	color.Blue = 225;
 }
 
 void Imagen::rescalarImagenes(){
@@ -27,7 +27,7 @@ void Imagen::pegarFondos(){
 	RangedPixelToPixelCopy(fondoUsuario, 0, fondoTerreno.TellWidth(), fondoTerreno.TellHeight()-1, 0, imagenDelTerreno,0, fondoTerreno.TellHeight());
 }
 
-void Imagen::obtenerImagenDelTerreno(char* jugador){
+void Imagen::obtenerImagenDelTerreno(char* jugador, int cantidadAlmacenada, int cantidadMaximaEnElAlmacen, int cantidadTanque, int cantidadTanqueMax){
 	this->rescalarImagenes();
 	this->pegarFondos();
 
@@ -41,5 +41,44 @@ void Imagen::obtenerImagenDelTerreno(char* jugador){
 
 	PrintString(imagenDelTerreno, jugador , fondoUsuario.TellWidth()/3, fondoTerreno.TellHeight()+50 , 60, color);
 
+	//Preparar dato para pegar como string, el del almacen
+	char datoParaImprimir[]=" ";
+
+	std::string dato = this->obtenerDatos(cantidadAlmacenada, cantidadMaximaEnElAlmacen);
+	std::strcpy(datoParaImprimir,dato.c_str());
+
+	//Pego el dato en la imagen
+	PrintString(imagenDelTerreno, datoParaImprimir, (fondoUsuario.TellWidth()/4)-80, imagenDelTerreno.TellHeight()-40 , 10, color);
+
+	// Preparo el otro dato para pegar como string, el del tanque.
+	std::string datoDos = this->obtenerDatos(cantidadTanque, cantidadTanqueMax);
+	std::strcpy(datoParaImprimir,datoDos.c_str());
+
+	//Pego el dato en la imagen
+	PrintString(imagenDelTerreno, datoParaImprimir, fondoUsuario.TellWidth()-210, imagenDelTerreno.TellHeight()-40 , 10, color);
+
 	imagenDelTerreno.WriteToFile("ejemploterreno.bmp");
+}
+std::string Imagen::casquearNumeroAString(int numero){
+	//   int to string en c++
+	std::string num;
+	int temp;
+
+	while(numero/10 != 0){
+		temp = numero%10;
+		numero= numero/10;
+		temp =temp + 48;
+		num = (char)temp + num;
+	}
+
+	numero=numero+48;
+	num = (char)numero + num ;
+	return num;
+}
+std::string Imagen::obtenerDatos(int cantidadAlmacenada, int cantidadMaximaEnElAlmacen){
+
+	std::string primerDato= this->casquearNumeroAString(cantidadAlmacenada);
+	std::string segundoDato = this->casquearNumeroAString(cantidadMaximaEnElAlmacen);
+	std::string dato = primerDato +"/"+ segundoDato;
+	return dato;
 }

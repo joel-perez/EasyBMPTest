@@ -1,4 +1,6 @@
 #include <iostream>
+#include <string>
+
 #include "EasyBMPTest.h"
 
 using namespace std;
@@ -10,10 +12,15 @@ int main() {
 	cout << "Ejemplo con TDA-s"<<endl;
 
 	char jugador[] = "Jugador";
+	int cantidadAlmacenada= 12;
+	int cantidadMaximaEnElAlmacen = 23;
+	int cantidadTanque =23;
+	int cantidadTanqueMax = 50;
 
 	Imagen imagen;
 
-	imagen.obtenerImagenDelTerreno(jugador);
+	imagen.obtenerImagenDelTerreno(jugador, cantidadAlmacenada, cantidadMaximaEnElAlmacen, cantidadTanque, cantidadTanqueMax);
+
 
 	return 0;
 }
