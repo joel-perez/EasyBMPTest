@@ -6,7 +6,7 @@
 #include "lib/EasyBMP_Font.h"
 
 const int COLUMNA = 12;
-const int FILA = 7;
+const int FILA = 12;
 const int MARGEN_COLUMNA = 80;
 const int MARGEN_FILA =30;
 // .......

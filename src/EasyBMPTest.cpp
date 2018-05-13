@@ -15,6 +15,11 @@ Imagen::Imagen(){
 
 void Imagen::rescalarImagenes(){
 	Rescale(cultivo, 'f', (imagenDelTerreno.TellWidth()-(2*MARGEN_COLUMNA))/ COLUMNA);
+	//redimensionar la imagen del terreno, solo la altura.
+	Rescale(fondoTerreno, 'H', (2*MARGEN_FILA)+(FILA*cultivo.TellHeight()));
+	// ... FALTA: Buscar forma para que la imagen no se agrande demasiado para que se vean todas las imagenes.
+	//Redimensionar la imagen principal, solo la altura.
+	//Rescale(imagenDelTerreno,'H',fondoTerreno.TellHeight()+fondoUsuario.TellHeight());
 }
 
 void Imagen::pegarFondos(){
@@ -28,6 +33,8 @@ void Imagen::obtenerImagenDelTerreno(char* jugador){
 
 	for (int fila = 0; fila < FILA; fila++){
 		for (int columna = 0; columna < COLUMNA; columna++){
+			//Imprime LETRA del cultivo sobre la imagen de cada cultivo.
+			PrintLetter(cultivo, 'D', cultivo.TellWidth()/2, (cultivo.TellHeight()/2)+17, 12, color);
 			RangedPixelToPixelCopy(cultivo,0,cultivo.TellWidth(),cultivo.TellHeight(),0,imagenDelTerreno,(columna*cultivo.TellWidth())+MARGEN_COLUMNA,(fila*cultivo.TellHeight())+MARGEN_FILA);
 		}
 	}
