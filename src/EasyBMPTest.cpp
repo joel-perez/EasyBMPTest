@@ -2,7 +2,8 @@
 
 Imagen::Imagen(){
 
-	cultivo.ReadFromFile("cultivo.bmp");
+	//cultivo.ReadFromFile("cultivo.bmp");
+	cultivo.ReadFromFile("trigo.bmp");
 	fondoTerreno.ReadFromFile("terreno.bmp");
 	fondoUsuario.ReadFromFile("fondoJugador.bmp");
 	imagenDelTerreno.SetSize(fondoTerreno.TellWidth(), fondoTerreno.TellHeight()+fondoUsuario.TellHeight());
@@ -35,7 +36,8 @@ void Imagen::obtenerImagenDelTerreno(char* jugador, int cantidadAlmacenada, int 
 		for (int columna = 0; columna < COLUMNA; columna++){
 			//Imprime LETRA del cultivo sobre la imagen de cada cultivo.
 			PrintLetter(cultivo, 'D', cultivo.TellWidth()/2, (cultivo.TellHeight()/2)+17, 12, color);
-			RangedPixelToPixelCopy(cultivo,0,cultivo.TellWidth(),cultivo.TellHeight(),0,imagenDelTerreno,(columna*cultivo.TellWidth())+MARGEN_COLUMNA,(fila*cultivo.TellHeight())+MARGEN_FILA);
+			//RangedPixelToPixelCopy(cultivo,0,cultivo.TellWidth(),cultivo.TellHeight(),0,imagenDelTerreno,(columna*cultivo.TellWidth())+MARGEN_COLUMNA,(fila*cultivo.TellHeight())+MARGEN_FILA);
+			RangedPixelToPixelCopyTransparent(cultivo, 0, cultivo.TellWidth(), cultivo.TellHeight(), 0, imagenDelTerreno, (columna * cultivo.TellWidth()) + MARGEN_COLUMNA, (fila * cultivo.TellHeight()) + MARGEN_FILA, *cultivo(0, 49));
 		}
 	}
 
