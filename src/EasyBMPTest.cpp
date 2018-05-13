@@ -44,7 +44,7 @@ void Imagen::obtenerImagenDelTerreno(char* jugador, int cantidadAlmacenada, int 
 	PrintString(imagenDelTerreno, jugador , fondoUsuario.TellWidth()/3, fondoTerreno.TellHeight()+50 , 60, color);
 
 	//Preparar dato para pegar como string, el del almacen
-	char datoParaImprimir[]=" ";
+	char datoParaImprimir[]="abcdefg";
 
 	std::string dato = this->obtenerDatos(cantidadAlmacenada, cantidadMaximaEnElAlmacen);
 	std::strcpy(datoParaImprimir,dato.c_str());
