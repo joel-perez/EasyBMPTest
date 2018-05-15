@@ -1,4 +1,7 @@
 #include "EasyBMPTest.h"
+#include <iostream>
+#include<string>
+#include <sstream>
 
 Imagen::Imagen(){
 
@@ -16,66 +19,57 @@ Imagen::Imagen(){
 
 void Imagen::rescalarImagenes(){
 	Rescale(cultivo, 'f', (imagenDelTerreno.TellWidth()-(2*MARGEN_COLUMNA))/ COLUMNA);
-	//redimensionar la imagen del terreno, solo la altura.
-	Rescale(fondoTerreno, 'H', (2*MARGEN_FILA)+(FILA*cultivo.TellHeight()));
-	// ... FALTA: Buscar forma para que la imagen no se agrande demasiado para que se vean todas las imagenes.
-	//Redimensionar la imagen principal, solo la altura.
-	//Rescale(imagenDelTerreno,'H',fondoTerreno.TellHeight()+fondoUsuario.TellHeight());
 }
 
 void Imagen::pegarFondos(){
 	RangedPixelToPixelCopy(fondoTerreno, 0, fondoTerreno.TellWidth(), fondoTerreno.TellHeight(), 0, imagenDelTerreno,0, 0);
 	RangedPixelToPixelCopy(fondoUsuario, 0, fondoTerreno.TellWidth(), fondoTerreno.TellHeight()-1, 0, imagenDelTerreno,0, fondoTerreno.TellHeight());
 }
+void Imagen::pegarEstadoDelCultivo(){
+	int fila = 1;
+	int columna =1;
 
-void Imagen::obtenerImagenDelTerreno(char* jugador, int cantidadAlmacenada, int cantidadMaximaEnElAlmacen, int cantidadTanque, int cantidadTanqueMax){
+	for (fila=0; fila<FILA;fila++){
+		for (columna = 0; columna<COLUMNA; columna++){
+			PrintLetter(cultivo, 'D', cultivo.TellWidth()/2, (cultivo.TellHeight()/2)+17, 12, color);
+			RangedPixelToPixelCopyTransparent(cultivo, 0, cultivo.TellWidth(), cultivo.TellHeight(), 0, imagenDelTerreno, (columna * cultivo.TellWidth()) + MARGEN_COLUMNA, (fila * cultivo.TellHeight()) + MARGEN_FILA, *cultivo(0, 49));
+		}
+
+	}
+}
+void Imagen::obtenerImagenDelTerreno(std::string jugador, int cantidadAlmacenada, int cantidadMaximaEnElAlmacen, int cantidadTanque, int cantidadTanqueMax){
 	this->rescalarImagenes();
 	this->pegarFondos();
 
-	for (int fila = 0; fila < FILA; fila++){
-		for (int columna = 0; columna < COLUMNA; columna++){
-			//Imprime LETRA del cultivo sobre la imagen de cada cultivo.
-			PrintLetter(cultivo, 'D', cultivo.TellWidth()/2, (cultivo.TellHeight()/2)+17, 12, color);
-			//RangedPixelToPixelCopy(cultivo,0,cultivo.TellWidth(),cultivo.TellHeight(),0,imagenDelTerreno,(columna*cultivo.TellWidth())+MARGEN_COLUMNA,(fila*cultivo.TellHeight())+MARGEN_FILA);
-			RangedPixelToPixelCopyTransparent(cultivo, 0, cultivo.TellWidth(), cultivo.TellHeight(), 0, imagenDelTerreno, (columna * cultivo.TellWidth()) + MARGEN_COLUMNA, (fila * cultivo.TellHeight()) + MARGEN_FILA, *cultivo(0, 49));
-		}
-	}
+	this->pegarEstadoDelCultivo();
 
-	PrintString(imagenDelTerreno, jugador , fondoUsuario.TellWidth()/3, fondoTerreno.TellHeight()+50 , 60, color);
 
-	//Preparar dato para pegar como string, el del almacen
-	char datoParaImprimir[]="abcdefg";
+	this->pegarDatos(cantidadAlmacenada, cantidadMaximaEnElAlmacen,cantidadTanque, cantidadTanqueMax,jugador);
+
+	imagenDelTerreno.WriteToFile("ejemploterreno.bmp");
+}
+void Imagen::pegarDatos(int cantidadAlmacenada, int cantidadMaximaEnElAlmacen,int cantidadTanque, int cantidadTanqueMax, std::string jugador){
+	char datoParaImprimir[20];
+
+	std::strcpy(datoParaImprimir,jugador.c_str());
+	PrintString(imagenDelTerreno, datoParaImprimir, fondoUsuario.TellWidth()/3, fondoTerreno.TellHeight()+50 , 60, color);
+
 
 	std::string dato = this->obtenerDatos(cantidadAlmacenada, cantidadMaximaEnElAlmacen);
 	std::strcpy(datoParaImprimir,dato.c_str());
 
-	//Pego el dato en la imagen
-	PrintString(imagenDelTerreno, datoParaImprimir, (fondoUsuario.TellWidth()/4)-80, imagenDelTerreno.TellHeight()-40 , 10, color);
+	PrintString(imagenDelTerreno, datoParaImprimir, (fondoUsuario.TellWidth()/4)-80, imagenDelTerreno.TellHeight()-30 , 10, color);
 
-	// Preparo el otro dato para pegar como string, el del tanque.
 	std::string datoDos = this->obtenerDatos(cantidadTanque, cantidadTanqueMax);
 	std::strcpy(datoParaImprimir,datoDos.c_str());
 
-	//Pego el dato en la imagen
-	PrintString(imagenDelTerreno, datoParaImprimir, fondoUsuario.TellWidth()-210, imagenDelTerreno.TellHeight()-40 , 10, color);
-
-	imagenDelTerreno.WriteToFile("ejemploterreno.bmp");
+	PrintString(imagenDelTerreno, datoParaImprimir, fondoUsuario.TellWidth()-210, imagenDelTerreno.TellHeight()-30 , 10, color);
 }
 std::string Imagen::casquearNumeroAString(int numero){
 	//   int to string en c++
-	std::string num;
-	int temp;
-
-	while(numero/10 != 0){
-		temp = numero%10;
-		numero= numero/10;
-		temp =temp + 48;
-		num = (char)temp + num;
-	}
-
-	numero=numero+48;
-	num = (char)numero + num ;
-	return num;
+	std::ostringstream convert;
+	convert<<numero;
+	return convert.str();
 }
 std::string Imagen::obtenerDatos(int cantidadAlmacenada, int cantidadMaximaEnElAlmacen){
 

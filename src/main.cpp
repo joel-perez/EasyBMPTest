@@ -11,7 +11,7 @@ int main() {
 	cout << "Easy BMP Test" << endl;
 	cout << "Ejemplo con TDA-s"<<endl;
 
-	char jugador[] = "Jugador";
+	string jugador = "Jugador";
 	int cantidadAlmacenada= 12;
 	int cantidadMaximaEnElAlmacen = 23;
 	int cantidadTanque =23;
